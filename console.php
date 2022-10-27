@@ -1,25 +1,24 @@
 <?php
-var_dump($argc);
-var_dump($argv);
-$api_url = "https://api.thedogapi.com/v1/breeds";
-$data = file_get_contents($api_url);
-$data = json_decode($data);
-$name = $argv[1];
+if(isset($argv[1])){
+    $name = $argv[1];
+}
 if(empty($name))
 {
+    $api_url = "https://api.thedogapi.com/v1/breeds";
+    $data = file_get_contents($api_url);
+    $data = json_decode($data);
     foreach ($data as $dog) {
-        print_r($dog->name."\n");
+       echo $dog->name."\n";
      }
 }
 else if($name){
+    $api_url = "https://api.thedogapi.com/v1/breeds/search?q=".$name;
+    $data = file_get_contents($api_url);
+    $data = json_decode($data);
     $datalength = count($data);
-    for($i = 0; $i<$datalength;$i++){
-        if(str_contains($data[$i]->name,$name)){
-            print_r($data[$i]->name."\n");
-        }
-    }
+    foreach ($data as $dog) {
+        echo $dog->name."\n";
+      }
 }
-
-
 
 ?>
