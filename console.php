@@ -1,17 +1,4 @@
 <?php
-function parameterApiCall($name){
-    $api_url = "https://api.thedogapi.com/v1/breeds/search?q=".$name;
-    $data = file_get_contents($api_url);
-    $data = json_decode($data);
-    return $data;
-}
-function emptyApiCall(){
-    $api_url = "https://api.thedogapi.com/v1/breeds";
-    $data = file_get_contents($api_url);
-    $data = json_decode($data);
-    return $data;
-}
-
 if(isset($argv[1])){
     $name = $argv[1];
     if(is_string($name) and ctype_alpha($name))
@@ -21,7 +8,7 @@ if(isset($argv[1])){
     }
     else{
             if($name){
-            $data = parameterApiCall($name);
+            $data = apiCall($name);
             foreach ($data as $dog) {
                 echo $dog->name."\n";
               }
@@ -38,10 +25,26 @@ else{
 else{
     if(empty($name))
     {
-        $data = emptyApiCall();
+        $name = "";
+        $data = apiCall($name);
         foreach ($data as $dog) {
            echo $dog->name."\n";
          }
+    }
+}
+
+function apiCall($name){
+    if($name==""){
+        $api_url = "https://api.thedogapi.com/v1/breeds";
+        $data = file_get_contents($api_url);
+        $data = json_decode($data);
+        return $data;           
+    }
+    else{
+        $api_url = "https://api.thedogapi.com/v1/breeds/search?q=".$name;
+        $data = file_get_contents($api_url);
+        $data = json_decode($data);
+        return $data;
     }
 }
 
