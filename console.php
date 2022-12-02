@@ -2,14 +2,31 @@
 $function = $argv[1] ?? null;
 $type = $argv[2] ?? null;
 $name = $argv[3] ?? null;
-getAnimal($function, $type, $name);
-function apiCall($name = "", $type)
+
+checkParameters($function, $type, $name);
+
+function getAnimal($name = "", $type)
 {
     if ($type == "dogs") {
         $api_url = empty($name) ? "https://api.thedogapi.com/v1/breeds" : "https://api.thedogapi.com/v1/breeds/search?q=" . $name;
+        return apiCall($api_url);
     } else if ($type == "cats") {
         $api_url = empty($name) ? "https://api.thecatapi.com/v1/breeds" : "https://api.thecatapi.com/v1/breeds/search?q=" . $name;
+        return apiCall($api_url);
+    } else if ($type == "both") {
+        $dogs = apiCall("https://api.thedogapi.com/v1/breeds");
+        $cats = apiCall("https://api.thecatapi.com/v1/breeds");
+        $animals = array_merge($dogs, $cats);
+        usort($animals, "sortByName");
+        printAnimal($animals);
     }
+}
+function sortByName($a, $b)
+{
+    return $a->name > $b->name;
+}
+function apiCall($api_url)
+{
     $content = file_get_contents($api_url);
     $data = $content == false ? throw new Exception("Error urlja") : json_decode($content);
     if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
@@ -23,7 +40,7 @@ function printAnimal($data)
         echo $animal->name . "\n";
     }
 }
-function getAnimal($function, $type, $name)
+function checkParameters($function, $type, $name)
 {
     if (isset($function) and isset($type)) {
         checkFunction($function, $type, $name);
@@ -34,7 +51,7 @@ function getAnimal($function, $type, $name)
 function checkName($name, $type)
 {
     if (isset($name) and is_string($name) and ctype_alpha($name) and strlen($name) <= 20) {
-        $data = apiCall($name, $type);
+        $data = getAnimal($name, $type);
         if (empty($data)) {
             echo "Ni rezultatov vašega iskanja.";
         } else {
@@ -50,7 +67,9 @@ function checkFunction($function, $type, $name)
         checkName($name, $type);
     } else if ($function == "list" and $type == "cats" or $function == "list" and $type == "dogs") {
         $type = ($type == "dogs") ? "dogs" : "cats";
-        printAnimal(apiCall($name, $type));
+        printAnimal(getAnimal($name, $type));
+    } else if ($function == "list" and $type == "both") {
+        getAnimal($name, $type);
     } else {
         echo "Nisi vnesel pravilnih parametrov.";
     }
