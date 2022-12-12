@@ -5,43 +5,62 @@ $name = $argv[3] ?? null;
 getAnimals($function, $type, $name);
 function getAnimals($function, $type, $name)
 {
-    if ($function == null and $type == null) {
-        echo "Nisi vnesel pravilnih parametrov.";
+    if ($function == "search" and animalType($type) != "both") {
+        searchAnimal($type, $name);
         return;
     }
-    if ($function == "search") {
-        if (!nameValid($name)) {
-            echo "Vnesti je potrebno pravilno ime pasme.";
-            return;
-        }
-        $data = getData($name, $type);
-        if (empty($data)) {
-            echo "Ni rezultatov vašega iskanja.";
-            return;
-        } else {
-            return printAnimal($data);
-        }
-    }
     if ($function == "list") {
+        if (!animalType($type)) {
+            return;
+        }
         return printAnimal(getData($name, $type));
-    } else {
-        echo "Nisi vnesel pravilnih parametrov.";
     }
-}
-function nameValid($name)
-{
-    if (isset($name) and is_string($name) and ctype_alpha($name) and strlen($name) <= 20) {
-        return true;
-    }
+    echo "Nisi vnesel pravilnih parametrov.";
     return;
 }
-
-function getData($name = "", $type)
+function animalType($type)
 {
-    if ($type != "dogs" and $type != "cats" and $type != "both") {
+    if ($type == "dogs" or $type == "cats" or $type == "both") {
+        return $type;
+    } else {
         echo "Nisi vnesel pravilnega tipa živali";
         return;
     }
+}
+function searchAnimal($type, $name)
+{
+    if (!nameValid($name)) {
+        return;
+    }
+    $data = getData($name, $type);
+    if (empty($data)) {
+        echo "Ni rezultatov vašega iskanja.";
+        return;
+    } else {
+        return printAnimal($data);
+    }
+}
+
+function nameValid($name)
+{
+    if ($name == null) {
+        echo "Nisi vnesel imena.";
+        return;
+    }
+    if (!is_string($name) or !ctype_alpha($name)) {
+        echo "Ime ne vsebuje pravilnih znakov.";
+        return;
+    }
+    if (strlen($name) >= 20) {
+        echo "Ime je predolgo. Maksimalna dolžina je 20 znakov.";
+        return;
+    }
+    return true;
+}
+
+function getData($name, $type)
+{
+
     if ($type == "dogs") {
         $api_url = empty($name) ? "https://api.thedogapi.com/v1/breeds" : "https://api.thedogapi.com/v1/breeds/search?q=" . $name;
         return apiCall($api_url);
@@ -58,6 +77,7 @@ function getData($name = "", $type)
         return $animals;
     }
 }
+
 function apiCall($api_url)
 {
     $content = file_get_contents($api_url);
@@ -67,6 +87,7 @@ function apiCall($api_url)
     }
     return $data;
 }
+
 function printAnimal($data)
 {
     foreach ($data as $animal) {
