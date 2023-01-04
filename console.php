@@ -3,7 +3,7 @@ $function = $argv[1] ?? null;
 $type = $argv[2] ?? null;
 $name = $argv[3] ?? null;
 require_once("lib/model.php");
-require_once("libs/consoleView.php");
+require_once("lib/views/consoleView.php");
 try {
     getAnimals($function, $type, $name);
 } catch (Exception $e) {
@@ -34,8 +34,6 @@ function nameValid($name)
     }
     return true;
 }
-
-
 
 function sortByName($a, $b)
 {

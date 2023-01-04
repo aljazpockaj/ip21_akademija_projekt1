@@ -9,7 +9,8 @@ function getAnimals($function, $type, $name)
         if (!animalType($type)) {
             return;
         }
-        return printAnimal(getData($name, $type));
+        $data = printAnimal(getData($name, $type));
+        return $data;
     }
     return "Nisi vnesel pravilnih parametrov.";
 }
@@ -17,12 +18,14 @@ function searchAnimal($type, $name)
 {
     if (!nameValid($name)) {
         return;
-    }
-    $data = getData($name, $type);
-    if (empty($data)) {
-        return "Ni rezultatov vašega iskanja.";
     } else {
-        return printAnimal($data);
+        $data = getData($name, $type);
+        if (empty($data)) {
+            echo "Ni rezultatov vašega iskanja.";
+            return;
+        } else {
+            return printAnimal($data);
+        }
     }
 }
 function getData($name, $type)
