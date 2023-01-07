@@ -4,8 +4,10 @@ $type = $argv[2] ?? null;
 $name = $argv[3] ?? null;
 require_once("lib/model.php");
 require_once("lib/views/consoleView.php");
+$view = new ConsoleView();
+$model = new ConsoleModel();
 try {
-    getAnimals($function, $type, $name);
+    $view->showAnimals($model->getAnimals($function, $type, $name));
 } catch (Exception $e) {
     echo "Caught exception: " . $e->getMessage();
 }

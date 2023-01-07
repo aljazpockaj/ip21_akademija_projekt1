@@ -1,7 +1,10 @@
 <?php
-function printAnimal($data)
+class ConsoleView
 {
-    foreach ($data as $animal) {
-        echo $animal->name . "\n";
+    public function showAnimals($data)
+    {
+        foreach ($data as $animal) {
+            echo $animal->name . "\n";
+        }
     }
 }
