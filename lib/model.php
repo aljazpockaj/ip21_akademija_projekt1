@@ -29,20 +29,40 @@ class ConsoleModel
             }
         }
     }
+    public function addCatType($cats)
+    {
+        for ($i = 0; $i < count($cats); $i++) {
+            array_push($cats[$i], $cats[$i]["type"] = "Puss");
+        }
+        return $cats;
+    }
+    public function addDogType($dogs)
+    {
+        for ($i = 0; $i < count($dogs); $i++) {
+            array_push($dogs[$i], $dogs[$i]["type"] = "Doggo");
+        }
+        return $dogs;
+    }
     public function getData($name, $type)
     {
 
         if ($type == "dogs") {
             $api_url = empty($name) ? "https://api.thedogapi.com/v1/breeds" : "https://api.thedogapi.com/v1/breeds/search?q=" . $name;
-            return $this->apiCall($api_url);
+            $dogs = $this->apiCall($api_url);
+            $dogs = $this->addDogType($dogs);
+            return $dogs;
         }
         if ($type == "cats") {
             $api_url = empty($name) ? "https://api.thecatapi.com/v1/breeds" : "https://api.thecatapi.com/v1/breeds/search?q=" . $name;
-            return $this->apiCall($api_url);
+            $cats = $this->apiCall($api_url);
+            $cats = $this->addCatType($cats);
+            return $cats;
         }
         if ($type == "both") {
             $dogs = $this->apiCall("https://api.thedogapi.com/v1/breeds");
             $cats = $this->apiCall("https://api.thecatapi.com/v1/breeds");
+            $cats = $this->addCatType($cats);
+            $dogs = $this->addDogType($dogs);
             $animals = array_merge($dogs, $cats);
             usort($animals, "sortByName");
             return $animals;
@@ -52,7 +72,7 @@ class ConsoleModel
     private function apiCall($api_url)
     {
         $content = file_get_contents($api_url);
-        $data = $content == false ? throw new Exception("Error urlja") : json_decode($content);
+        $data = $content == false ? throw new Exception("Error urlja") : json_decode($content, true);
         if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
             throw new Exception("Error decodanja");
         }

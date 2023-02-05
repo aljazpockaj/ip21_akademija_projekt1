@@ -4,20 +4,23 @@ $type = $argv[2] ?? null;
 $name = $argv[3] ?? null;
 require_once("lib/model.php");
 require_once("lib/views/consoleView.php");
-require_once 'vendor\autoload.php';
+require_once 'vendor/autoload.php';
+
+use Twig\Loader\FilesystemLoader;
+use Twig\Environment;
+
 $view = new ConsoleView();
 $model = new ConsoleModel();
-
-$loader = new \Twig\Loader\FilesystemLoader('templates');
-$twig = new \Twig\Environment($loader, [
-    'cache' => 'vendor\twig\twig\src\Cache\compilation_cache',
+$loader = new FilesystemLoader('templates');
+$twig = new Environment($loader, [
+    'debug' => true
 ]);
+$twig->addExtension(new \Twig\Extension\DebugExtension());
 $template = $twig->load('test.twig');
-echo $template->render(['name' => 'stefan']);
-
-
 try {
-    $view->showAnimals($model->getAnimals($function, $type, $name));
+    $animals = $model->getAnimals($function, $type, $name);
+    echo $template->render(['test.twig', 'animals' => $animals]);
+    #$view->showAnimals($model->getAnimals($function, $type, $name));
 } catch (Exception $e) {
     echo "Caught exception: " . $e->getMessage();
 }
@@ -49,5 +52,5 @@ function nameValid($name)
 
 function sortByName($a, $b)
 {
-    return $a->name > $b->name;
+    return $a["name"] > $b["name"];
 }
