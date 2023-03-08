@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Webpage</title>
+    </head>
+    <body>
+       {% for animal in animals %}
+            <ul>
+            <li> 
+            Name = {{ animal.name}}  <br>
+            Type = {{ animal.type }}</li>
+            </ul>
+        {% endfor %}
+    </body>
+</html>

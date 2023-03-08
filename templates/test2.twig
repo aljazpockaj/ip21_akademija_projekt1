@@ -1,13 +1,10 @@
 {% for animal in animals %}
-{% if (animal.type == "Doggo") %}
 label => {{animal.name}} 
 type => {{animal.type}}
 temperament => {{animal.temperament}}
+{% if (animal.type == "Doggo") %}
 bred for =>{{animal.bred_for}}
 {% elseif (animal.type == "Puss") %}
-label => {{animal.name}} 
-type => {{animal.type}}
-temperament => {{animal.temperament}}
 dog friendly => {{animal.dog_friendly}}
 {% endif %}
 {% endfor %}
