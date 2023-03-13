@@ -2,13 +2,20 @@
 <html>
     <head>
         <title>My Webpage</title>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
+    <h1 class="center">List of cat and dog breeds</h1>
        {% for animal in animals %}
-            <ul>
+            <ul class="center">
             <li> 
-            Name = {{ animal.name}}  <br>
+            Name = <a class="animalName">{{ animal.name}}</a>  <br>
             Type = {{ animal.type }}</li>
+        {% if animal.type == "Puss" %}
+         <img class="icon" src = "images/cat.svg" alt="Cat"/>
+         {% else %}
+          <img class="icon" src = "images/dog-alt.svg" alt="Cat"/>
+        {% endif %}
             </ul>
         {% endfor %}
     </body>
